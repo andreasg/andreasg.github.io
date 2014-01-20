@@ -4,7 +4,7 @@
   <title><![CDATA[slow thinking]]></title>
   <link href="http://andreasg.github.io/atom.xml" rel="self"/>
   <link href="http://andreasg.github.io/"/>
-  <updated>2014-01-20T13:29:17+01:00</updated>
+  <updated>2014-01-20T13:52:08+01:00</updated>
   <id>http://andreasg.github.io/</id>
   <author>
     <name><![CDATA[Andreas Granström]]></name>
@@ -12,25 +12,5 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    
-    <title type="html"><![CDATA[Declarative Game Programming]]></title>
-    <link href="http://andreasg.github.io/blog/2014/01/20/declarative-game-programming/"/>
-    
-    <updated>2014-01-20T11:36:31+01:00</updated>
-    <id>http://andreasg.github.io/blog/2014/01/20/declarative-game-programming</id>
-    
-    <content type="html"><![CDATA[<p>This is a post</p>
-
-<figure class='code'><figcaption><span>Some code</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='haskell'><span class='line'><span class="kr">data</span> <span class="kt">List</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Elem</span> <span class="n">a</span> <span class="p">(</span><span class="kt">List</span> <span class="n">a</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Nil</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>lol</p>
-]]></content>
-    
-  </entry>
   
 </feed>
