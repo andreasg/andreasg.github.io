@@ -1,49 +1,45 @@
 ---
 layout: post
 title: "Declarative Game Programming"
-date: 2014-01-20 11:36:31 +0100
+date: 2015-02-18 00:12:22 +0000
 comments: true
 published: true
 categories: haskell frp tutorial
 ---
 
-Since too long ago, I have wanted to get a better understanding of Arrows, and Functional Reactive Programming. After many encounters with the subjects, I finally managed to spend enough time learning about these topics. I am happy to say that I'm no longer in a state of ignorance (if still far from a level I would call proficient).
+Since far long ago I have wanted to get a better understanding of Arrows, and Functional Reactive Programming. After many encounters with the subjects, I finally managed to spend enough time learning about these topics. I am happy to say that I'm no longer in a state of ignorance (if still far from a level I would call proficient).
 
-Here follows a tutorial/journal of how one may go about developing a game using FRP ([Netwire 5.0](http://hackage.haskell.org/package/netwire)) and Haskell. I'm not claiming an expert on the topic, so if you have suggestions for improvement, please let me know.
+This tutorial/journal summarizes my knowledge on these topics through the developing a game using the FRP framework ([Netwire 5.0](http://hackage.haskell.org/package/netwire)) and Haskell. I am far from an expert on the subject, so if you have suggestions for improvement, please let me know.
 
+Before we go any further, let me mention that I was inspired by the following [blog post](http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html) by [ocharles](http://ocharles.org.uk), and due to lack of ideas for a game I decided to create my own version of [this](http://www.helicoptergame.net/).
 
-First of: I was inspired by the following [blog post](http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html) by [ocharles](http://ocharles.org.uk), and due to lack of ideas for a game, I decided to re-implement [this](http://www.helicoptergame.net/) in Haskell.
-
-
-<!-- more -->
 
 ## A Helicopter Game
+The main challenge for me when first creating the game was getting my hands around how Netwire actually worked and how the library is composed. The first challenge I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player are within an infinitely scrolling cave.
 
-The main challange for me when first creating the game, was getting my hands around how Netwire actually worked, and how the library is composed. The firsh challange I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player are within an infinitely scrolling cave, automatically scrolling right to left.
-
-Further, we want the player to move along at the same speed as the world/camera, and to have either the force of gravity or an upwards force applied to him.
+Further, we want the player to move along at the same speed as the world/camera, and to always be moving in some direction along the y-axis.
 
 Thus we will need three main components:
 
- * A player position,
- * lists of rectangles for ceiling and floor,
+ * A player position and trajectory,
+ * an infinite list of rectangles for ceiling and floor,
  * a scrolling camera.
 
 
 ## Introducing: [Netwire](http://hackage.haskell.org/package/netwire)
 
-Netwire is a functional reactive programming DSL for Haskell. It gives us the concept of ```Wires```. Wires are quite powerful, however for the purpose of this tutorial we will use a simplified type synonym that we'll call ```Wire'```.
+Netwire is a domain specific language for functional reactive programming written in Haskell. It gives us the concept of ```Wires```. Wires are quite powerful and they incorporate a lot of information, for the purpose of this tutorial we will use a simplified type synonym that we'll call ```Wire'```.
 
-{% highlight haskell %}
-import Control.Wire type Wire' a
-b = (HasTime t s, Monad m, Fractional t) => Wire s t () a b
-{% endhighlight %}
+```haskell
+import Control.Wire
+type Wire' a b = (HasTime t s, Monad m, Fractional t) => Wire s t () a b
+```
 
 A ```Wire' a b``` models a continuous behavior that takes input of type ```a``` and outputs values of type ```b```. Wires are either *producing* or *inhibiting* (blocking): this is our switching mechanism, as we'll see when we introduce how Wires are composed.
 
-Netwire (Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An ```Event a``` represents a value of type ```a``` at a discrete point in time.
+Netwire (and its Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An ```Event a``` represents a value of type ```a``` at a discrete point in time.
 
-Netwire provides quite a rich language for reasoning about Wires and Events, a selection of not-randomly-chosen functions are :
+Netwire provides quite a rich language for reasoning about Wires and Events, a few important functions are:
 
 ### Included wires
 
@@ -70,7 +66,7 @@ As Events are discrete, and our time-model is continuous, if we want to observe 
 
 ### A (very) simple example
 
-To create a step-function that produces 0 for 2 seconds, and then switches to producing 1 forever,
+To create a step-function that produces 0 for two seconds, and then switches to producing 1 forever,
 
 ```haskell
 for 2 . pure 0 --> pure 1
@@ -87,14 +83,14 @@ For the purpose focusing on Netwire and FRP, we will assume that we have a funct
  - camera position,
  - rectangles for ceiling and floor,
 
-in order to sucessfully render the game to the screen.
+in order to successfully render the game to the screen.
 
 We can represent this using a tuple
 
 ```haskell
-type Game = (Double            -- camera pos
+type Game = (Double            -- camera position
             ,([Rect], [Rect])  -- ceiling and floor
-            ,(Double, Double)  -- player pos
+            ,(Double, Double)  -- player position
             )
 render :: Assets -> Game -> IO ()
 ```
@@ -115,11 +111,11 @@ Where ```scrollSpeed :: Num a => a``` is a parameter to our game.
 
 Now that we have the concept of scrolling, we can begin to generate the cave. We will create a wire that produces events with the appropriate x-position and height of the rectangles.
 
-We know that we want to generate both x-cordinates and y-coordinates. Of which the x-cordinate will just be the scrolling offset by the screen width (we want to generate the level off-screen). The y-coordinate will be a random value within a given interval, depending on if we are doing the ceiling or the floor.
+We know that we want to generate both x-coordinates and y-coordinates. Of which the x-coordinate will just be the scrolling offset by the screen width (we want to generate the level off-screen). The y-coordinate will be a random value within a given interval, depending on if we are doing the ceiling or the floor.
 
 ```haskell
 xcoord :: Wire' a (Event Double)
-xcoord = periodic 1 . (scroll+screenW)
+xcoord = periodic 1 . (scroll + screenW)
 
 ycoord :: (Double, Double) -> Wire' a (Event Double)
 ycoord interval = stdNoiseR 1 interval seed
@@ -146,7 +142,7 @@ accumList :: Wire' (Event a) [a]
 accumList = hold . accumE (flip (:)) []
 ```
 
-We can now eaily define our celiing and floor
+We can now easily define our ceiling and floor
 
 ```haskell 
 ceiling :: Wire' a [Rect]
@@ -166,7 +162,7 @@ As the position of the player depends on receiving input, we first need to model
 
 ### Input Events
 
-Netwire provedes us with two very helpful wires
+Netwire provides us with two very helpful wires
 
 ```haskell
 became :: (a -> Bool) -> Wire' a a -- Given a predicate, only produce if it holds true.
@@ -176,7 +172,7 @@ between :: Wire' (a, Event b, Event c) -> a -- produce with a between Event b an
 Don't confuse Netwire events with system events that we get from SDL:
 
  - ```SDL.Event```: Events from the operating-system, and
- -  ```Event```: discrete events in time as modelled by Netwire.
+ -  ```Event```: discrete events in time as modeled by Netwire.
 
 ```haskell
 keyDown :: SDL.Keysym -> Wire' SDL.Event (Event SDL.Event)
@@ -234,7 +230,7 @@ game = proc e -> do
   returnA -< (camera, l, playerPos)
 ```
 
-Now we just need to add some collission detection
+Now we just need to add some collision detection
 
 
 ```haskell
