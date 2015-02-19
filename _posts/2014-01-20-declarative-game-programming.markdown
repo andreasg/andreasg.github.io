@@ -13,8 +13,11 @@ This tutorial/journal summarizes my knowledge on these topics through the develo
 
 Before we go any further, let me mention that I was inspired by the following [blog post](http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html) by [ocharles](http://ocharles.org.uk), and due to lack of ideas for a game I decided to create my own version of [this](http://www.helicoptergame.net/).
 
+[Here](https://github.com/andreasg/FRPCopter/) you'll find the full source code for what's presented in this article.
 
-## A Helicopter Game
+
+# A Helicopter Game
+
 The main challenge for me when first creating the game was getting my hands around how Netwire actually worked and how the library is composed. The first challenge I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player are within an infinitely scrolling cave.
 
 Further, we want the player to move along at the same speed as the world/camera, and to always be moving in some direction along the y-axis.
@@ -26,45 +29,45 @@ Thus we will need three main components:
  * a scrolling camera.
 
 
-## Introducing: [Netwire](http://hackage.haskell.org/package/netwire)
+# Introducing [Netwire](http://hackage.haskell.org/package/netwire)
 
-Netwire is a domain specific language for functional reactive programming written in Haskell. It gives us the concept of ```Wires```. Wires are quite powerful and they incorporate a lot of information, for the purpose of this tutorial we will use a simplified type synonym that we'll call ```Wire'```.
+Netwire is a domain specific language for functional reactive programming written in Haskell. It gives us the concept of `Wires`. Wires are quite powerful and they incorporate a lot of information, for the purpose of this tutorial we will use a simplified type synonym that we'll call `Wire'`.
 
 ```haskell
 import Control.Wire
 type Wire' a b = (HasTime t s, Monad m, Fractional t) => Wire s t () a b
 ```
 
-A ```Wire' a b``` models a continuous behavior that takes input of type ```a``` and outputs values of type ```b```. Wires are either *producing* or *inhibiting* (blocking): this is our switching mechanism, as we'll see when we introduce how Wires are composed.
+A `Wire' a b` models a continuous behavior that takes input of type `a` and outputs values of type `b`. Wires are either *producing* or *inhibiting* (blocking): this is our switching mechanism, as we'll see when we introduce how Wires are composed.
 
-Netwire (and its Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An ```Event a``` represents a value of type ```a``` at a discrete point in time.
+Netwire (and its Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An `Event a` represents a value of type `a` at a discrete point in time.
 
 Netwire provides quite a rich language for reasoning about Wires and Events, a few important functions are:
 
-### Included wires
+# Included wires
 
-####  ```for :: t -> Wire' a a``` 
-Creates a wire that behaves as the identity function (statically passing through its input) for ```t``` seconds, after which it *inhibits*
+#  `for :: t -> Wire' a a`
+Creates a wire that behaves as the identity function (statically passing through its input) for `t` seconds, after which it *inhibits*
 
-#### ```periodic :: t -> Wire' a (Event a)```
-With period ```t```, sample the continuous input and generate discrete events with the input value at that time.
+# `periodic :: t -> Wire' a (Event a)`
+With period `t`, sample the continuous input and generate discrete events with the input value at that time.
 
-#### ```hold :: Wire' (Event a) a```
-As Events are discrete, and our time-model is continuous, if we want to observe the value of an Event, we need to *remember* it, which is exactly what ```hold``` does. For each ```Event a```, ```hold``` will output the value of the last observed event.
+# `hold :: Wire' (Event a) a`
+As Events are discrete, and our time-model is continuous, if we want to observe the value of an Event, we need to *remember* it, which is exactly what `hold` does. For each `Event a`, `hold` will output the value of the last observed event.
 
-### Switching between wires
+# Switching between wires
 
- - ```w0 --> w1``` Creates a wire that behaves as ```w0``` until ```w0``` inhibits and then switches to behave as ```w1```, freeing up ```w0``` from memory.
+ - `w0 --> w1` Creates a wire that behaves as `w0` until `w0` inhibits and then switches to behave as `w1`, freeing up `w0` from memory.
 
- - ```w0 <|> w1``` is left-biased selection (behaves as ```w0``` if its producing, else ```w1```).
+ - `w0 <|> w1` is left-biased selection (behaves as `w0` if its producing, else `w1`).
 
-### Stitching wires together
+# Stitching wires together
 
   - Since Wires instantiates both Arrow and Applicative, we have access to all the nice functions associated with those type-classes as well.
 
-  - Further, Wires can be composed using our normal category operators ```(.)``` and ```>>>```.
+  - Further, Wires can be composed using our normal category operators `(.)` and `>>>`.
 
-### A (very) simple example
+# A (very) simple example
 
 To create a step-function that produces 0 for two seconds, and then switches to producing 1 forever,
 
@@ -72,12 +75,12 @@ To create a step-function that produces 0 for two seconds, and then switches to 
 for 2 . pure 0 --> pure 1
 ```
 
-As we seen above, ```for 2``` will pass it's input (```pure 0```) through for the specified amount of seconds, and then inhibit. Upon inhibition, ```-->``` will switch to the second argument, which is a constant wire outputting ```1```.
+As we seen above, `for 2` will pass it's input (`pure 0`) through for the specified amount of seconds, and then inhibit. Upon inhibition, `-->` will switch to the second argument, which is a constant wire outputting `1`.
 
 
-## Creating the Game
+# Creating the Game
 
-For the purpose focusing on Netwire and FRP, we will assume that we have a function ```render``` to render our game using some graphical Assets. ```render``` only requires only requires
+For the purpose focusing on Netwire and FRP, we will assume that we have a function `render` to render our game using some graphical Assets. `render` only requires only requires
 
  - player position,
  - camera position,
@@ -95,7 +98,7 @@ type Game = (Double            -- camera position
 render :: Assets -> Game -> IO ()
 ```
 
-### Scrolling the World
+# Scrolling the World
 
 Scrolling the world is obviously a function of time, so we can simply make a wire that grows faster than time by multiplying time by a coefficient >1.
 
@@ -104,10 +107,10 @@ scroll :: Wire a Double
 scroll = arr realToFrac . time * scrollSpeed
 ```
 
-Where ```scrollSpeed :: Num a => a``` is a parameter to our game.
+Where `scrollSpeed :: Num a => a` is a parameter to our game.
 
 
-### Level generation
+# Level generation
 
 Now that we have the concept of scrolling, we can begin to generate the cave. We will create a wire that produces events with the appropriate x-position and height of the rectangles.
 
@@ -156,11 +159,11 @@ floor = obst toFloor (400, 600)
 
 We're now done with generating the cave! On to:
 
-## Player Positioning
+# Player Positioning
 
 As the position of the player depends on receiving input, we first need to model that.
 
-### Input Events
+# Input Events
 
 Netwire provides us with two very helpful wires
 
@@ -193,10 +196,10 @@ spacePressed = between . arr (\(on, off) -> ((), on, off))
  where space = SDL.SDLK_SPACE
 ```
 
-the output of ```spacePressed``` is ```()```, as we are only interested if this wire is producing or inhibiting, not *what* it is producing.
+the output of `spacePressed` is `()`, as we are only interested if this wire is producing or inhibiting, not *what* it is producing.
 
 
-### Finally, positioning
+# Finally, positioning
 
 To compute the player position we need the players velocity over time. this is expressed as either the integral of gravitational acceleration (falling), or a constant upward-pointing velocity-vector. Note the use of scrollSpeed for velocity in x-axis, so that the player will move along with the camera.
 
@@ -219,7 +222,7 @@ position = integral startPos . velocity
 ```
 
 
-## Putting it all together
+# Putting it all together
 
 ```haskell
 game :: Wire SDL.Event Game
@@ -254,11 +257,31 @@ game = proc e -> do
   returnA -< (camera, l, playerPos)
 ```
 
-and we're done.
+and we're done with our game.
 
-This post is already running too long, I'll try to make a short post about how we go about rendering the game using SDL in a later post.
+# Rendering the game and advancing time
+
+Our code above simply implements the logic of our game. We still need a "main loop" that advances our wires and retrieves events from the system. You'll find the full source in the github-repository, but here's the essential part of our `main :: IO ()` function.
+
+```haskell
+-- ... 
+go assets screen clockSession_ game
+  where go as scr s w = do
+          e <- SDL.pollEvent
+          (ds, s') <- stepSession s
+          (res, w') <- stepWire w ds (Right e)
+          case res of
+            Left _ -> putStrLn "qutting"
+            Right gm -> do render scr as gm
+                           SDL.flip scr
+                           go as scr s' w'
+```
+
+As you can see, `go` is a recursive function that in each execution calculates a *session delta* that it in turn uses to /step/ the wires and get the current state of the system, stored in `res`.
 
 # End Result
+
+Again, you'll find the full source in my [git-repo](https://github.com/andreasg/FRPCopter/). Check the `tutorial` branch for the code that's presented in this tutorial.
 
 Here's a screenshot of the finished game
 
