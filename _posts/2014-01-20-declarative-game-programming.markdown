@@ -18,11 +18,11 @@ Before we go any further, let me mention that I was inspired by the following [b
 
 # A Helicopter Game
 
-The main challenge for me when first creating the game was getting my hands around how Netwire actually worked and how the library is composed. The first challenge I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player are within an infinitely scrolling cave.
+The main challenge for me when first creating the game was getting my hands around how Netwire actually worked and how the library is composed. The first challenge I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player is within an infinitely scrolling cave.
 
-Further, we want the player to move along at the same speed as the world/camera, and to always be moving in some direction along the y-axis.
+Further, we want the player to move along at the same speed as the world/camera, and to always be either falling downwards or moving up along the y-axis.
 
-Thus we will need three main components:
+We can isolate three main components:
 
  * A player position and trajectory,
  * an infinite list of rectangles for ceiling and floor,
@@ -35,10 +35,12 @@ Netwire is a domain specific language for functional reactive programming writte
 
 ```haskell
 import Control.Wire
-type Wire' a b = (HasTime t s, Monad m, Fractional t) => Wire s t () a b
+type Wire' a b = (HasTime t s, Fractional t, Monad m) => Wire s t () a b
 ```
 
-A `Wire' a b` models a continuous behavior that takes input of type `a` and outputs values of type `b`. Wires are either *producing* or *inhibiting* (blocking): this is our switching mechanism, as we'll see when we introduce how Wires are composed.
+In the spirit of keeping this tutorial more hand-on, I will not dig in to the definition of `Wire'` too much. Let's keep it to this: `Wire` is instance of `Monad`, `Arrow` and `Applicative`. Further, our simplified type `Wire'` applies some of `Wire`s type arguments. Most interestingly this is the `HasTime t s` and `Fractional t` part. In Netwire, time can be assumed to be continuous, and time is also captured explicitly on the type level, hence we require `HasTime` and `Fractional`.
+
+Our simple type `Wire' a b` models a continuous behavior that takes input of type `a` and outputs values of type `b`. Wires are either *producing* or *inhibiting* (blocking): this is our switching mechanism, as we'll see when we introduce how Wires are composed.
 
 Netwire (and its Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An `Event a` represents a value of type `a` at a discrete point in time.
 
@@ -123,8 +125,7 @@ xcoord = periodic 1 . (scroll + screenW)
 ycoord :: (Double, Double) -> Wire' a (Event Double)
 ycoord interval = stdNoiseR 1 interval seed
  where seed = 1234 -- not very fun to keep this for the final version
-                   -- as the same level will be generated on each play,
-                   -- but it makes thing simpler for this example.
+                   -- as the same level will be generated on each play.
 ```
 
 We use the two wires to create a general function for generating rectangle obstacles
@@ -196,7 +197,7 @@ spacePressed = between . arr (\(on, off) -> ((), on, off))
  where space = SDL.SDLK_SPACE
 ```
 
-the output of `spacePressed` is `()`, as we are only interested if this wire is producing or inhibiting, not *what* it is producing.
+the output type of `spacePressed` is `()`, as we are only interested if this wire is producing or inhibiting, not *what* it is producing.
 
 
 # Finally, positioning
@@ -224,6 +225,8 @@ position = integral startPos . velocity
 
 # Putting it all together
 
+We stitch our wires together using the Arrows syntax extension.
+
 ```haskell
 game :: Wire SDL.Event Game
 game = proc e -> do
@@ -233,13 +236,14 @@ game = proc e -> do
   returnA -< (camera, l, playerPos)
 ```
 
-Now we just need to add some collision detection
-
+The code above will generate a `Game` for us that we can render, all that is missing is to add our game-over condition, which requires collision detection
 
 ```haskell
 isColliding :: Wire' ((Double, Double), [Rect]) -> Bool
 isColliding = arr $ \(p,rs) -> any (contains p) rs
 ```
+
+Using this, we can add the game-over check to the game-wire.
 
 ```haskell
 game :: Wire SDL.Event Game
@@ -264,17 +268,19 @@ and we're done with our game.
 Our code above simply implements the logic of our game. We still need a "main loop" that advances our wires and retrieves events from the system. You'll find the full source in the github-repository, but here's the essential part of our `main :: IO ()` function.
 
 ```haskell
--- ... 
-go assets screen clockSession_ game
-  where go as scr s w = do
-          e <- SDL.pollEvent
-          (ds, s') <- stepSession s
-          (res, w') <- stepWire w ds (Right e)
-          case res of
-            Left _ -> putStrLn "qutting"
-            Right gm -> do render scr as gm
-                           SDL.flip scr
-                           go as scr s' w'
+main :: IO ()
+main = do
+  -- Load assets, initialize graphics and screen, ...
+  go assets screen clockSession_ game
+    where go as scr s w = do
+            e <- SDL.pollEvent
+            (ds, s') <- stepSession s
+            (res, w') <- stepWire w ds (Right e)
+            case res of
+              Left _ -> putStrLn "qutting"
+              Right gm -> do render scr as gm
+                             SDL.flip scr
+                             go as scr s' w'
 ```
 
 As you can see, `go` is a recursive function that in each execution calculates a *session delta* that it in turn uses to /step/ the wires and get the current state of the system, stored in `res`.
