@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Declarative Game Programming"
-date: 2015-02-18 00:12:22 +0000
+date: 2015-02-20 12:33:00 +0001
 comments: true
 published: true
 categories: haskell frp tutorial
