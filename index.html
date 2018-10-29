@@ -1,0 +1,175 @@
+<!doctype html5>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Latest | Andreas Granström</title><style>
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.site {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.header {
+  padding: 60px;
+  text-align: center;
+}
+
+.footer {
+  padding: 20px;
+}
+
+.main {
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  flex: 30%;
+  max-width: 300px;
+}
+
+.content {
+  flex: 70%;
+}
+
+.content img {
+    max-width: 100%;
+}
+
+figcaption {
+    text-align: center;
+    font-style: italic;
+}
+
+html, body {
+  color: #1F2D3D;
+  background: #efefef;
+  background-color: #efefef;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.header {
+  color: #ebf7ea;
+  text-shadow: 3px 3px 4px rgba(150, 150, 150, 0.6);
+  background: #96be8c;
+  background-color: #96be8c;
+  height: 150px;
+  padding: 20px;
+  -webkit-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  z-index: 10; }
+  .header p {
+    margin: 0px; }
+
+.footer {
+  color: #ebf7ea;
+  background: #96be8c;
+  background-color: #96be8c;
+  z-index: 10;
+  -webkit-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33); }
+
+.main h1, .main h2, .main h3, .main h4, .main h5, .main h6 {
+  color: #629460; }
+
+.main .sidebar {
+  background: #5b5b5b;
+  background-color: #5b5b5b;
+  -webkit-box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22);
+  -moz-box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22);
+  box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22); }
+  .main .sidebar .sidebar-menu-title {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: 900;
+    color: #96be8c; }
+  .main .sidebar .sidebar-nav {
+    text-shadow: 2px 2px 4px rgba(150, 150, 150, 0.2);
+    list-style: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 30px;
+    margin: 0px;
+    min-height: 100%; }
+    .main .sidebar .sidebar-nav .sidebar-link {
+      width: 100%;
+      height: 30px;
+      text-align: left;
+      padding-left: 40px;
+      font-weight: 900;
+      font-size: 1.4em;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+      .main .sidebar .sidebar-nav .sidebar-link a {
+        text-decoration: none;
+        color: #edf6d3; }
+    .main .sidebar .sidebar-nav .sidebar-link.active {
+      background: #efefef;
+      background-color: #efefef; }
+      .main .sidebar .sidebar-nav .sidebar-link.active a {
+        color: #5b5b5b; }
+    .main .sidebar .sidebar-nav .sidebar-link:hover {
+      background: #efefef;
+      background-color: #efefef; }
+      .main .sidebar .sidebar-nav .sidebar-link:hover a {
+        color: #5b5b5b; }
+
+.main .content {
+  padding: 20px; }
+
+
+@media screen and (max-width: 700px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .sidebar {
+     min-height: 0px;
+     max-width: 100%;
+     padding-top: 0px;
+     padding-bottom: 0px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="site">
+<div class="header"><h1>Andreas Granström</h1><p><em>A crisis in imrovisation</em></p></div>
+<main class="main">
+<div class="row">
+<div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link active"><a href="/">Latest</a></li><li class="sidebar-link"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
+<div class="content"><div class="post">
+
+<h1 class="page-title">Latest</h1>
+<h2 id="hey">Hey!</h2>
+<p>Welcome, here’s my blog…</p>
+<h2 id="recent-articles">Recent Articles</h2>
+<ul class="post-list">
+</ul>
+
+</div></div>
+</div>
+</main>
+<div class="footer"><h2>Copyright (c) Andreas Granström</h2></div>
+</div>
+</body>
+</html>
