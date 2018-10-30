@@ -1,0 +1,452 @@
+<!doctype html5>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Functional Reactive Game Programming | Andreas Granström</title><style>
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.site {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.header {
+  padding: 60px;
+  text-align: center;
+}
+
+.footer {
+  padding: 20px;
+}
+
+.main {
+  flex: 1;
+  flex-flow: row wrap;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  flex: 30%;
+  max-width: 300px;
+}
+
+.content {
+  flex: 70%;
+}
+
+.content img {
+    max-width: 100%;
+}
+
+figcaption {
+    text-align: center;
+    font-style: italic;
+}
+
+html, body {
+  color: #1F2D3D;
+  background: #f7f7f7;
+  background-color: #f7f7f7;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.header {
+  color: #fcca46;
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.6);
+  background: #233d4d;
+  background-color: #233d4d;
+  height: 150px;
+  padding: 20px;
+  -webkit-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
+  z-index: 10; }
+  .header p {
+    margin: 0px; }
+
+.footer {
+  color: #fcca46;
+  background: #233d4d;
+  background-color: #233d4d;
+  z-index: 10;
+  -webkit-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33); }
+
+.main h1, .main h2, .main h3, .main h4, .main h5, .main h6 {
+  color: #233d4d; }
+
+.main .sidebar {
+  background: #f7f7f7;
+  background-color: #f7f7f7;
+  -webkit-box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1);
+  -moz-box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1);
+  box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1); }
+  .main .sidebar .sidebar-menu-title {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: 900;
+    color: #233d4d; }
+  .main .sidebar .sidebar-nav {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 30px;
+    margin: 0px;
+    min-height: 100%; }
+    .main .sidebar .sidebar-nav .sidebar-link {
+      width: 100%;
+      height: 30px;
+      text-align: left;
+      padding-left: 40px;
+      font-weight: 900;
+      font-size: 1.4em;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+      .main .sidebar .sidebar-nav .sidebar-link a {
+        text-decoration: none;
+        color: black; }
+    .main .sidebar .sidebar-nav .sidebar-link.active {
+      background: #233d4d;
+      background-color: #233d4d;
+      box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      -webkit-box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      -moz-box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      border-bottom: none; }
+      .main .sidebar .sidebar-nav .sidebar-link.active a {
+        color: #f7f7f7; }
+    .main .sidebar .sidebar-nav .sidebar-link:hover {
+      background: #233d4d;
+      background-color: #233d4d; }
+      .main .sidebar .sidebar-nav .sidebar-link:hover a {
+        color: #f7f7f7; }
+
+.main .content {
+  padding: 20px;
+  overflow-x: auto; }
+  .main .content a:not(.sourceLine) {
+    color: #a1c181;
+    font-weight: 900; }
+
+pre {
+  color: #fef3c3;
+  background: #282828;
+  background-color: #282828;
+  border: 1px solid #464646;
+  -webkit-box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  margin: 10px;
+  padding: 20px;
+  overflow-x: scroll; }
+
+code {
+  font-family: "Lucida Console", Monaco, monospace;
+  line-height: 1;
+  overflow-x: scroll; }
+
+sourceCode {
+  overflow-x: scroll; }
+
+
+@media screen and (max-width: 700px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .sidebar {
+     min-height: 0px;
+     max-width: 100%;
+     padding-top: 0px;
+     padding-bottom: 0px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="site">
+<div class="header"><h1>Andreas Granström</h1><p><em>A crisis in imrovisation</em></p></div>
+<main class="main">
+<div class="row">
+<div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link"><a href="/">Latest</a></li><li class="sidebar-link"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
+<div class="content"><div class="post">
+<h4 class="page-date">2015-02-20</h4>
+<h1 class="page-title">Functional Reactive Game Programming</h1>
+<p>Since far long ago I have wanted to get a better understanding of Arrows, and Functional Reactive Programming. After many encounters with the subjects, I finally managed to spend enough time learning about these topics. I am happy to say that I’m no longer in a state of ignorance (if still far from a level I would call proficient).</p>
+<p>This tutorial/journal summarizes my knowledge on these topics through the developing a game using the FRP framework (<a href="http://hackage.haskell.org/package/netwire">Netwire 5.0</a>) and Haskell. I am far from an expert on the subject, so if you have suggestions for improvement, please let me know.</p>
+<p>Before we go any further, let me mention that I was inspired by the following <a href="http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html">blog post</a> by <a href="http://ocharles.org.uk">ocharles</a>, and due to lack of ideas for a game I decided to create my own version of <a href="http://www.helicoptergame.net/">this</a>.</p>
+<p><a href="https://github.com/andreasg/FRPCopter/">Here</a> you’ll find the full source code for what’s presented in this article.</p>
+<h2 id="a-helicopter-game">A Helicopter Game</h2>
+<p>The main challenge for me when first creating the game was getting my hands around how Netwire actually worked and how the library is composed. The first challenge I tackled was generation of a ceiling and a floor, scrolling across the screen from right to left. The goal is for the ceiling and floor to give the impression that the player is within an infinitely scrolling cave.</p>
+<p>Further, we want the player to move along at the same speed as the world/camera, and to always be either falling downwards or moving up along the y-axis.</p>
+<p>We can isolate three main components:</p>
+<ul>
+<li><p>A player position and trajectory,</p></li>
+<li><p>an infinite list of rectangles for ceiling and floor,</p></li>
+<li><p>a scrolling camera.</p></li>
+</ul>
+<h2 id="introducing-netwire">Introducing <a href="http://hackage.haskell.org/package/netwire">Netwire</a></h2>
+<p>Netwire is a domain specific language for functional reactive programming written in Haskell. It gives us the concept of <code>Wires</code>. Wires are quite powerful and they incorporate a lot of information, for the purpose of this tutorial we will use a simplified type synonym that we’ll call <code>Wire'</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb1-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">import</span> <span class="dt">Control.Wire</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">type</span> <span class="dt">Wire&#39;</span> a b <span class="fu">=</span> (<span class="dt">HasTime</span> t s, <span class="dt">Fractional</span> t, <span class="dt">Monad</span> m) <span class="ot">=&gt;</span> <span class="dt">Wire</span> s t () a b</a></code></pre></div>
+<p>In the spirit of keeping this tutorial more hand-on, I will not dig in to the definition of <code>Wire'</code> too much. Let’s keep it to this: <code>Wire</code> is instance of <code>Monad</code>, <code>Arrow</code> and <code>Applicative</code>. Further, our simplified type <code>Wire'</code> applies some of <code>Wire</code>s type arguments. Most interestingly this is the <code>HasTime t s</code> and <code>Fractional t</code> part. In Netwire, time can be assumed to be continuous, and time is also captured explicitly on the type level, hence we require <code>HasTime</code> and <code>Fractional</code>.</p>
+<p>Our simple type <code>Wire' a b</code> models a continuous behavior that takes input of type <code>a</code> and outputs values of type <code>b</code>. Wires are either <em>producing</em> or <em>inhibiting</em> (blocking): this is our switching mechanism, as we’ll see when we introduce how Wires are composed.</p>
+<p>Netwire (and its Wires) assumes a continuous time-model. For modeling discrete events, such as key-presses or sampling of Wires, we have the concept of an events. An <code>Event a</code> represents a value of type <code>a</code> at a discrete point in time.</p>
+<p>Netwire provides quite a rich language for reasoning about Wires and Events, a few important functions are:</p>
+<h2 id="included-wires">Included wires</h2>
+<h3 id="for-t---wire-a-a"><code>for :: t -&gt; Wire' a a</code></h3>
+<p>Creates a wire that behaves as the identity function (statically passing through its input) for <code>t</code> seconds, after which it <em>inhibits</em></p>
+<h3 id="periodic-t---wire-a-event-a"><code>periodic :: t -&gt; Wire' a (Event a)</code></h3>
+<p>With period <code>t</code>, sample the continuous input and generate discrete events with the input value at that time.</p>
+<h3 id="hold-wire-event-a-a"><code>hold :: Wire' (Event a) a</code></h3>
+<p>As Events are discrete, and our time-model is continuous, if we want to observe the value of an Event, we need to <em>remember</em> it, which is exactly what <code>hold</code> does. For each <code>Event a</code>, <code>hold</code> will output the value of the last observed event.</p>
+<h2 id="switching-between-wires">Switching between wires</h2>
+<ul>
+<li><p><code>w0 --&gt; w1</code> Creates a wire that behaves as <code>w0</code> until <code>w0</code> inhibits and then switches to behave as <code>w1</code>, freeing up <code>w0</code> from memory.</p></li>
+<li><p><code>w0 &lt;|&gt; w1</code> is left-biased selection (behaves as <code>w0</code> if its producing, else <code>w1</code>).</p></li>
+</ul>
+<h2 id="stitching-wires-together">Stitching wires together</h2>
+<ul>
+<li><p>Since Wires instantiates both Arrow and Applicative, we have access to all the nice functions associated with those type-classes as well.</p></li>
+<li><p>Further, Wires can be composed using our normal category operators <code>(.)</code> and <code>&gt;&gt;&gt;</code>.</p></li>
+</ul>
+<h2 id="a-very-simple-example">A (very) simple example</h2>
+<p>To create a step-function that produces 0 for two seconds, and then switches to producing 1 forever,</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb2-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">for <span class="dv">2</span> <span class="fu">.</span> pure <span class="dv">0</span> <span class="fu">--&gt;</span> pure <span class="dv">1</span></a></code></pre></div>
+<p>As we seen above, <code>for 2</code> will pass it’s input (<code>pure 0</code>) through for the specified amount of seconds, and then inhibit. Upon inhibition, <code>--&gt;</code> will switch to the second argument, which is a constant wire outputting <code>1</code>.</p>
+<h2 id="creating-the-game">Creating the Game</h2>
+<p>For the purpose focusing on Netwire and FRP, we will assume that we have a function <code>render</code> to render our game using some graphical Assets. <code>render</code> only requires only requires</p>
+<ul>
+<li><p>player position,</p></li>
+<li><p>camera position,</p></li>
+<li><p>rectangles for ceiling and floor,</p></li>
+</ul>
+<p>in order to successfully render the game to the screen.</p>
+<p>We can represent this using a tuple</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">type</span> <span class="dt">Game</span> <span class="fu">=</span> (<span class="dt">Double</span>            <span class="co">-- camera position</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">            ,([<span class="dt">Rect</span>], [<span class="dt">Rect</span>])  <span class="co">-- ceiling and floor</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">            ,(<span class="dt">Double</span>, <span class="dt">Double</span>)  <span class="co">-- player position</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">            )</a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="ot">render ::</span> <span class="dt">Assets</span> <span class="ot">-&gt;</span> <span class="dt">Game</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a></code></pre></div>
+<h2 id="scrolling-the-world">Scrolling the World</h2>
+<p>Scrolling the world is obviously a function of time, so we can simply make a wire that grows faster than time by multiplying time by a coefficient &gt;1.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="ot">scroll ::</span> <span class="dt">Wire</span> a <span class="dt">Double</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">scroll <span class="fu">=</span> arr realToFrac <span class="fu">.</span> time <span class="fu">*</span> scrollSpeed</a></code></pre></div>
+<p>Where <code>scrollSpeed :: Num a =&gt; a</code> is a parameter to our game.</p>
+<h2 id="level-generation">Level generation</h2>
+<p>Now that we have the concept of scrolling, we can begin to generate the cave. We will create a wire that produces events with the appropriate x-position and height of the rectangles.</p>
+<p>We know that we want to generate both x-coordinates and y-coordinates. Of which the x-coordinate will just be the scrolling offset by the screen width (we want to generate the level off-screen). The y-coordinate will be a random value within a given interval, depending on if we are doing the ceiling or the floor.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="ot">xcoord ::</span> <span class="dt">Wire&#39;</span> a (<span class="dt">Event</span> <span class="dt">Double</span>)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">xcoord <span class="fu">=</span> periodic <span class="dv">1</span> <span class="fu">.</span> (scroll <span class="fu">+</span> screenW)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="ot">ycoord ::</span> (<span class="dt">Double</span>, <span class="dt">Double</span>) <span class="ot">-&gt;</span> <span class="dt">Wire&#39;</span> a (<span class="dt">Event</span> <span class="dt">Double</span>)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">ycoord interval <span class="fu">=</span> stdNoiseR <span class="dv">1</span> interval seed</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"> <span class="kw">where</span> seed <span class="fu">=</span> <span class="dv">1234</span> <span class="co">-- not very fun to keep this for the final version</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">                   <span class="co">-- as the same level will be generated on each play.</span></a></code></pre></div>
+<p>We use the two wires to create a general function for generating rectangle obstacles</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="ot">obst ::</span> ((<span class="dt">Double</span>, <span class="dt">Double</span>) <span class="ot">-&gt;</span> <span class="dt">Rect</span>) <span class="co">-- how to create a rect from</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                                   <span class="co">-- an (x,y) value</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">     <span class="ot">-&gt;</span> (<span class="dt">Double</span>, <span class="dt">Double</span>) <span class="co">-- interval for the height of the rect</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">     <span class="ot">-&gt;</span> <span class="dt">Wire&#39;</span> a [<span class="dt">Rect</span>]</a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">obst toRect interval <span class="fu">=</span> arr (map toRect <span class="fu">.</span> flip zip)</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">                     <span class="fu">.</span> (accumList <span class="fu">***</span> accumList)</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">                     <span class="fu">.</span> (xcoord <span class="fu">&amp;&amp;&amp;</span> ycoord)</a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="ot">accumList ::</span> <span class="dt">Wire&#39;</span> (<span class="dt">Event</span> a) [a]</a>
+<a class="sourceLine" id="cb6-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18">accumList <span class="fu">=</span> hold <span class="fu">.</span> accumE (flip (<span class="fu">:</span>)) []</a></code></pre></div>
+<p>We can now easily define our ceiling and floor</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb7-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">ceiling<span class="ot"> ::</span> <span class="dt">Wire&#39;</span> a [<span class="dt">Rect</span>]</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">ceiling <span class="fu">=</span> obst toCeiling (<span class="dv">0</span>, <span class="dv">200</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="kw">where</span> toCeiling (x,y) <span class="fu">=</span> mkRect x <span class="dv">0</span> scrollSpeed y</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">floor<span class="ot"> ::</span> <span class="dt">Wire&#39;</span> a [<span class="dt">Rect</span>]</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">floor <span class="fu">=</span> obst toFloor (<span class="dv">400</span>, <span class="dv">600</span>)</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">  <span class="kw">where</span> toFloor (x,y) <span class="fu">=</span> mkRect x y scrollSpeed <span class="dv">200</span></a></code></pre></div>
+<p>We’re now done with generating the cave! On to:</p>
+<h2 id="player-positioning">Player Positioning</h2>
+<p>As the position of the player depends on receiving input, we first need to model that.</p>
+<h2 id="input-events">Input Events</h2>
+<p>Netwire provides us with two very helpful wires</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb8-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="ot">became ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> <span class="dt">Wire&#39;</span> a a <span class="co">-- Given a predicate, only produce if it holds true.</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="ot">between ::</span> <span class="dt">Wire&#39;</span> (a, <span class="dt">Event</span> b, <span class="dt">Event</span> c) <span class="ot">-&gt;</span> a <span class="co">-- produce with a between Event b and Event c.</span></a></code></pre></div>
+<p>Don’t confuse Netwire events with system events that we get from SDL:</p>
+<ul>
+<li><p><code>SDL.Event</code>: Events from the operating-system, and</p></li>
+<li><p><code>Event</code>: discrete events in time as modeled by Netwire.</p></li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb9-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="ot">keyDown ::</span> <span class="dt">SDL.Keysym</span> <span class="ot">-&gt;</span> <span class="dt">Wire&#39;</span> <span class="dt">SDL.Event</span> (<span class="dt">Event</span> <span class="dt">SDL.Event</span>)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">keyDown key <span class="fu">=</span> became <span class="fu">$</span> \e <span class="ot">-&gt;</span> <span class="kw">case</span> e <span class="kw">of</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">  (<span class="dt">SDL.KeyDown</span> (<span class="dt">SDL.Keysym</span> k _ _)) <span class="ot">-&gt;</span> k <span class="fu">==</span> key; _ <span class="ot">-&gt;</span> <span class="dt">False</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="ot">keyUp ::</span> <span class="dt">SDL.Keysym</span> <span class="ot">-&gt;</span> <span class="dt">Wire&#39;</span> <span class="dt">SDL.Event</span> (<span class="dt">Event</span> <span class="dt">SDL.Event</span>)</a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">keyUp key <span class="fu">=</span> became <span class="fu">$</span> \e <span class="ot">-&gt;</span> <span class="kw">case</span> e <span class="kw">of</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12">  (<span class="dt">SDL.KeyUp</span> (<span class="dt">SDL.Keysym</span> k _ _)) <span class="ot">-&gt;</span> k <span class="fu">==</span> key; _ <span class="ot">-&gt;</span> <span class="dt">False</span></a></code></pre></div>
+<p>Writing a Wire that produces while we are pressing Space is now trivial:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb10-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="ot">spacePressed ::</span> <span class="dt">Wire&#39;</span> <span class="dt">SDL.Event</span> ()</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">spacePressed <span class="fu">=</span> between <span class="fu">.</span> arr (\(on, off) <span class="ot">-&gt;</span> ((), on, off))</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">             <span class="fu">.</span> (keyDown space <span class="fu">&amp;&amp;&amp;</span> keyUp space)</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"> <span class="kw">where</span> space <span class="fu">=</span> <span class="dt">SDL.SDLK_SPACE</span></a></code></pre></div>
+<p>the output type of <code>spacePressed</code> is <code>()</code>, as we are only interested if this wire is producing or inhibiting, not <em>what</em> it is producing.</p>
+<h2 id="finally-positioning">Finally, positioning</h2>
+<p>To compute the player position we need the players velocity over time. this is expressed as either the integral of gravitational acceleration (falling), or a constant upward-pointing velocity-vector. Note the use of scrollSpeed for velocity in x-axis, so that the player will move along with the camera.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb11-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="ot">velocity ::</span> <span class="dt">Wire&#39;</span> <span class="dt">SDL.Event</span> (<span class="dt">Double</span>, <span class="dt">Double</span>)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">velocity <span class="fu">=</span> gravity <span class="fu">.</span> until <span class="fu">.</span> pressSpace</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">           <span class="fu">--&gt;</span> goUp <span class="fu">.</span> spacePressed</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">           <span class="fu">--&gt;</span> velocity</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10">  <span class="kw">where</span> gravity <span class="fu">=</span> integral (scrollSpeed, <span class="dv">100</span>) <span class="fu">.</span> pure (<span class="dv">0</span>, <span class="dv">800</span>)</a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12">        pressSpace <span class="fu">=</span> pure () <span class="fu">&amp;&amp;&amp;</span> keyDown <span class="dt">SDL.SDLK_SPACE</span></a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14">        goUp <span class="fu">=</span> pure (<span class="dv">0</span>, <span class="dv">200</span>)</a></code></pre></div>
+<p>The player position is then the integral of the velocity</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb12-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="ot">position ::</span> <span class="dt">Wire&#39;</span> <span class="dt">SDL.Event</span> (<span class="dt">Double</span>, <span class="dt">Double</span>)</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">position <span class="fu">=</span> integral startPos <span class="fu">.</span> velocity</a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"> <span class="kw">where</span> startPos <span class="fu">=</span> (<span class="dv">200</span>, <span class="dv">200</span>)</a></code></pre></div>
+<h2 id="putting-it-all-together">Putting it all together</h2>
+<p>We stitch our wires together using the Arrows syntax extension.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb13-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="ot">game ::</span> <span class="dt">Wire</span> <span class="dt">SDL.Event</span> <span class="dt">Game</span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">game <span class="fu">=</span> proc e <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">  camera    <span class="ot">&lt;-</span> scroll   <span class="fu">-&lt;</span> ()</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">  l         <span class="ot">&lt;-</span> level    <span class="fu">-&lt;</span> ()</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">  playerPos <span class="ot">&lt;-</span> position <span class="fu">-&lt;</span> e</a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12">  returnA <span class="fu">-&lt;</span> (camera, l, playerPos)</a></code></pre></div>
+<p>The code above will generate a <code>Game</code> for us that we can render, all that is missing is to add our game-over condition, which requires collision detection</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb14-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="ot">isColliding ::</span> <span class="dt">Wire&#39;</span> ((<span class="dt">Double</span>, <span class="dt">Double</span>), [<span class="dt">Rect</span>]) <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">isColliding <span class="fu">=</span> arr <span class="fu">$</span> \(p,rs) <span class="ot">-&gt;</span> any (contains p) rs</a></code></pre></div>
+<p>Using this, we can add the game-over check to the game-wire.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb15-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="ot">game ::</span> <span class="dt">Wire</span> <span class="dt">SDL.Event</span> <span class="dt">Game</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">game <span class="fu">=</span> proc e <span class="ot">-&gt;</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">  camera    <span class="ot">&lt;-</span> scroll   <span class="fu">-&lt;</span> ()</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">  l         <span class="ot">&lt;-</span> level    <span class="fu">-&lt;</span> ()</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">  playerPos <span class="ot">&lt;-</span> position <span class="fu">-&lt;</span> e</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">  <span class="co">-- check if we are colliding</span></a>
+<a class="sourceLine" id="cb15-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">  colliding <span class="ot">&lt;-</span> isColliding <span class="fu">-&lt;</span> (p, fst l <span class="fu">++</span> snd l)</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">  <span class="co">-- if collision, inhibit the game wire</span></a>
+<a class="sourceLine" id="cb15-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb15-18" data-line-number="18">  when (<span class="fu">==</span><span class="dt">False</span>) <span class="fu">--&gt;</span> inhibit () <span class="fu">-&lt;</span> colliding</a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb15-20" data-line-number="20">  returnA <span class="fu">-&lt;</span> (camera, l, playerPos)</a></code></pre></div>
+<p>and we’re done with our game.</p>
+<h2 id="rendering-the-game-and-advancing-time">Rendering the game and advancing time</h2>
+<p>Our code above simply implements the logic of our game. We still need a “main loop” that advances our wires and retrieves events from the system. You’ll find the full source in the github-repository, but here’s the essential part of our <code>main :: IO ()</code> function.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb16-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="ot">main ::</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">main <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb16-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">  <span class="co">-- Load assets, initialize graphics and screen, ...</span></a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">  go assets screen clockSession_ game</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">    <span class="kw">where</span> go as scr s w <span class="fu">=</span> <span class="kw">do</span></a>
+<a class="sourceLine" id="cb16-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb16-12" data-line-number="12">            e <span class="ot">&lt;-</span> SDL.pollEvent</a>
+<a class="sourceLine" id="cb16-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14">            (ds, s&#39;) <span class="ot">&lt;-</span> stepSession s</a>
+<a class="sourceLine" id="cb16-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb16-16" data-line-number="16">            (res, w&#39;) <span class="ot">&lt;-</span> stepWire w ds (<span class="dt">Right</span> e)</a>
+<a class="sourceLine" id="cb16-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb16-18" data-line-number="18">            <span class="kw">case</span> res <span class="kw">of</span></a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb16-20" data-line-number="20">              <span class="dt">Left</span> _ <span class="ot">-&gt;</span> putStrLn <span class="st">&quot;qutting&quot;</span></a>
+<a class="sourceLine" id="cb16-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb16-22" data-line-number="22">              <span class="dt">Right</span> gm <span class="ot">-&gt;</span> <span class="kw">do</span> render scr as gm</a>
+<a class="sourceLine" id="cb16-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb16-24" data-line-number="24">                             SDL.flip scr</a>
+<a class="sourceLine" id="cb16-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb16-26" data-line-number="26">                             go as scr s&#39; w&#39;</a></code></pre></div>
+<p>As you can see, <code>go</code> is a recursive function that in each execution calculates a <em>session delta</em> that it in turn uses to /step/ the wires and get the current state of the system, stored in <code>res</code>.</p>
+<h2 id="end-result">End Result</h2>
+<p>Again, you’ll find the full source in my <a href="https://github.com/andreasg/FRPCopter/">git-repo</a>. Check the <code>tutorial</code> branch for the code that’s presented in this tutorial.</p>
+<p>Here’s a screenshot of the finished game</p>
+<figure>
+<img src="/static/frp/frp_copter.png" alt="Complete game screenshot" /><figcaption>Complete game screenshot</figcaption>
+</figure>
+
+</div></div>
+</div>
+</main>
+<div class="footer"><div class="footer-text">Copyright © 2018  Andreas Granström</div></div>
+</div>
+</body>
+</html>

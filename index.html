@@ -32,6 +32,7 @@ html, body {
 
 .main {
   flex: 1;
+  flex-flow: row wrap;
 }
 
 .row {
@@ -59,17 +60,17 @@ figcaption {
 
 html, body {
   color: #1F2D3D;
-  background: #efefef;
-  background-color: #efefef;
+  background: #f7f7f7;
+  background-color: #f7f7f7;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
 .header {
-  color: #ebf7ea;
-  text-shadow: 3px 3px 4px rgba(150, 150, 150, 0.6);
-  background: #96be8c;
-  background-color: #96be8c;
+  color: #fcca46;
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.6);
+  background: #233d4d;
+  background-color: #233d4d;
   height: 150px;
   padding: 20px;
   -webkit-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
@@ -80,30 +81,30 @@ html, body {
     margin: 0px; }
 
 .footer {
-  color: #ebf7ea;
-  background: #96be8c;
-  background-color: #96be8c;
+  color: #fcca46;
+  background: #233d4d;
+  background-color: #233d4d;
   z-index: 10;
   -webkit-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
   -moz-box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33);
   box-shadow: 0px -4px 10px 0px rgba(50, 50, 50, 0.33); }
 
 .main h1, .main h2, .main h3, .main h4, .main h5, .main h6 {
-  color: #629460; }
+  color: #233d4d; }
 
 .main .sidebar {
-  background: #5b5b5b;
-  background-color: #5b5b5b;
-  -webkit-box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22);
-  -moz-box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22);
-  box-shadow: 2px 0px 5px 0px rgba(50, 50, 50, 0.22); }
+  background: #f7f7f7;
+  background-color: #f7f7f7;
+  -webkit-box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1);
+  -moz-box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1);
+  box-shadow: 4px 0px 10px 0px rgba(50, 50, 50, 0.1); }
   .main .sidebar .sidebar-menu-title {
     font-size: 1.2em;
     text-align: center;
     font-weight: 900;
-    color: #96be8c; }
+    color: #233d4d; }
   .main .sidebar .sidebar-nav {
-    text-shadow: 2px 2px 4px rgba(150, 150, 150, 0.2);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     list-style: none;
     padding-left: 0px;
     padding-right: 0px;
@@ -120,20 +121,48 @@ html, body {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
       .main .sidebar .sidebar-nav .sidebar-link a {
         text-decoration: none;
-        color: #edf6d3; }
+        color: black; }
     .main .sidebar .sidebar-nav .sidebar-link.active {
-      background: #efefef;
-      background-color: #efefef; }
+      background: #233d4d;
+      background-color: #233d4d;
+      box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      -webkit-box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      -moz-box-shadow: inset 0 0 10px rgba(200, 200, 200, 0.4);
+      border-bottom: none; }
       .main .sidebar .sidebar-nav .sidebar-link.active a {
-        color: #5b5b5b; }
+        color: #f7f7f7; }
     .main .sidebar .sidebar-nav .sidebar-link:hover {
-      background: #efefef;
-      background-color: #efefef; }
+      background: #233d4d;
+      background-color: #233d4d; }
       .main .sidebar .sidebar-nav .sidebar-link:hover a {
-        color: #5b5b5b; }
+        color: #f7f7f7; }
 
 .main .content {
-  padding: 20px; }
+  padding: 20px;
+  overflow-x: auto; }
+  .main .content a:not(.sourceLine) {
+    color: #a1c181;
+    font-weight: 900; }
+
+pre {
+  color: #fef3c3;
+  background: #282828;
+  background-color: #282828;
+  border: 1px solid #464646;
+  -webkit-box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  -moz-box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  box-shadow: 2px 2px 10px 0px rgba(50, 50, 50, 0.33);
+  margin: 10px;
+  padding: 20px;
+  overflow-x: scroll; }
+
+code {
+  font-family: "Lucida Console", Monaco, monospace;
+  line-height: 1;
+  overflow-x: scroll; }
+
+sourceCode {
+  overflow-x: scroll; }
 
 
 @media screen and (max-width: 700px) {
@@ -164,12 +193,15 @@ html, body {
 <p>Welcome, here’s my blog…</p>
 <h2 id="recent-articles">Recent Articles</h2>
 <ul class="post-list">
+<li class="post-item">
+<a href="posts/functional_reactive_game_programming">Functional Reactive Game Programming (2015-02-20)</a>
+</li>
 </ul>
 
 </div></div>
 </div>
 </main>
-<div class="footer"><h2>Copyright (c) Andreas Granström</h2></div>
+<div class="footer"><div class="footer-text">Copyright © 2018  Andreas Granström</div></div>
 </div>
 </body>
 </html>
