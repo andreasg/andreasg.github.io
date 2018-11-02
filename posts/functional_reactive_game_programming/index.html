@@ -26,6 +26,14 @@ html, body {
   text-align: center;
 }
 
+.header a {
+  text-decoration: none;
+}
+
+.page-title a {
+  text-decoration: none;
+}
+
 .footer {
   padding: 20px;
 }
@@ -77,6 +85,8 @@ html, body {
   -moz-box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
   box-shadow: 0px 4px 10px 0px rgba(50, 50, 50, 0.33);
   z-index: 10; }
+  .header a {
+    color: #fcca46; }
   .header p {
     margin: 0px; }
 
@@ -140,6 +150,8 @@ html, body {
 .main .content {
   padding: 50px;
   overflow-x: auto; }
+  .main .content .page-title a {
+    color: #233d4d !important; }
   .main .content a:not(.sourceLine) {
     color: #476c9b;
     font-weight: bold; }
@@ -190,13 +202,13 @@ sourceCode {
 </head>
 <body>
 <div class="site">
-<div class="header"><h1>A Crisis in Improvisation</h1><p>Andreas Granström</p></div>
+<div class="header"><h1><a href="https://andreasgranstrom.com">A Crisis in Improvisation</a></h1><p>Andreas Granström</p></div>
 <main class="main">
 <div class="row">
 <div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link"><a href="/">Latest</a></li><li class="sidebar-link"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
 <div class="content"><div class="post">
 <h4 class="page-date">2015-02-20</h4>
-<h1 class="page-title">Functional Reactive Game Programming</h1>
+<h1 class="page-title"><a href="https://andreasgranstrom.com/posts/functional_reactive_game_programming">Functional Reactive Game Programming</a></h1>
 <p>Since far long ago I have wanted to get a better understanding of Arrows, and Functional Reactive Programming. After many encounters with the subjects, I finally managed to spend enough time learning about these topics. I am happy to say that I’m no longer in a state of ignorance (if still far from a level I would call proficient).</p>
 <p>This tutorial/journal summarizes my knowledge on these topics through the developing a game using the FRP framework (<a href="http://hackage.haskell.org/package/netwire">Netwire 5.0</a>) and Haskell. I am far from an expert on the subject, so if you have suggestions for improvement, please let me know.</p>
 <p>Before we go any further, let me mention that I was inspired by the following <a href="http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html">blog post</a> by <a href="http://ocharles.org.uk">ocharles</a>, and due to lack of ideas for a game I decided to create my own version of <a href="http://www.helicoptergame.net/">this</a>.</p>
