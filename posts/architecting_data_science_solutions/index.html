@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Articles | A Crisis in Improvisation</title><style>
+<title>Architecting Data Science Solutions | A Crisis in Improvisation</title><style>
 
 * {
     box-sizing: border-box;
@@ -193,19 +193,36 @@ sourceCode {
 <div class="header"><h1>A Crisis in Improvisation</h1><p>Andreas Granström</p></div>
 <main class="main">
 <div class="row">
-<div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link"><a href="/">Latest</a></li><li class="sidebar-link active"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
+<div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link"><a href="/">Latest</a></li><li class="sidebar-link"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
 <div class="content"><div class="post">
-
-<h1 class="page-title">Articles</h1>
-<p>Here are all my articles</p>
-<ul class="post-list">
-<li class="post-item">
-<a href="/posts/build_simple_models">Build Simple Models (or Keep it Simple, Stupid) (2018-11-02)</a>
-</li>
-<li class="post-item">
-<a href="/posts/functional_reactive_game_programming">Functional Reactive Game Programming (2015-02-20)</a>
-</li>
+<h4 class="page-date">2018-11-02</h4>
+<h1 class="page-title">Architecting Data Science Solutions</h1>
+<p>In today’s day and age, companies are in a life or death struggle to gain all the leverage they can from their data in order to better compete in the market. When building out systems that creates that leverage, there is an aspect that is oft forgotten by the well meaning data scientists and data engineers out there: a successful data system must be <em>trusted</em> by the business to be useful.</p>
+<p>There are a few key points that help garner trust</p>
+<ul>
+<li><p>the AI model is understandable</p></li>
+<li><p>the AI model makes intuitive sense</p></li>
+<li><p>decisions by the system can be overridden if needed</p></li>
+<li><p>decisions by the system can be inspected to explain the decision</p></li>
 </ul>
+<p>Many of the current AI and machine learning models does not satisfy these points, and indeed, are in contention with most of them. Take AlphaGO as an example, it performed a very unexpected move that even to this day, the top ranking Go players cannot see the reasoning behind. While this is great for playing a game of Go, it might be less comfortable having an AI making high-stakes business decisions without it being able to explain what it’s doing, or why.</p>
+<h2 id="manufacturing-trust">Manufacturing Trust</h2>
+<h3 id="a-simpler-model">A simpler model</h3>
+<p>The most obvious method to hit the trust points for your model, is to use simple, well tested and transparent models, such as Linear Regression (familiar to business stake holders), or decisions trees (tells us what features and how importent the model considers them).</p>
+<p>Of course, if the problem we are solving requires a more sophisticated model, this might not be an option, and even observable models such as Random Forests, when combined in an ensemble classifier, e.g., with an SVM learner, the output quickly becomes less tractable.</p>
+<p>There are plenty of good arguments for going this route:</p>
+<ul>
+<li><p>the system is simple</p></li>
+<li><p>time to market for these AI systems is very quick</p></li>
+<li><p>these models make for a good baseline to validate the business need. If more powerful models are reqired, that can be added at a later stage.</p></li>
+</ul>
+<h3 id="a-cushoned-model">A cushoned model</h3>
+<p>Wether you go for a simple AI model or not, another option is to build out tooling around your model. Examples of such tools are:</p>
+<ul>
+<li><p>Real-time inspection of decisions that the system is making</p></li>
+<li><p>Meta-parameters that flag decisions for review if the probability is within some treshold</p></li>
+</ul>
+<p>Do not underestimate how such simple mechanisms can help how your model is perceived within the business. As a Data Scientist you might have full trust in your model, but the comfort of having these mechanisms in place is invaluable to the business.</p>
 
 </div></div>
 </div>
