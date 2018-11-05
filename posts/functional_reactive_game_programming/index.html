@@ -1,9 +1,10 @@
 <!doctype html5>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta property="og:url"           content="https://andreasgranstrom.com/posts/functional_reactive_game_programming" />
+<meta property="og:type"          content="website" /><meta property="og:title"         content="Functional Reactive Game Programming | A Crisis in Improvisation" /><meta property="og:description"   content="Musings on technology and data science" /><meta charset="UTF-8">
 <meta name="robots" content="index, follow">
-<meta name="description" content="A Crisis in Improvisation">
+<meta name="description" content="Musings on technology and data science">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Functional Reactive Game Programming | A Crisis in Improvisation</title><style>
 
@@ -31,6 +32,11 @@ html, body {
 
 .header a {
   text-decoration: none;
+}
+
+.tag {
+    font-family: monospace;
+    margin-right: 1em;
 }
 
 .page-title a {
@@ -130,11 +136,11 @@ html, body {
     min-height: 100%; }
     .main .sidebar .sidebar-nav .sidebar-link {
       width: 100%;
-      height: 30px;
+      height: 40px;
       text-align: left;
       padding-left: 40px;
       font-weight: 900;
-      font-size: 1.4em;
+      font-size: 1.8em;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
       .main .sidebar .sidebar-nav .sidebar-link a {
         text-decoration: none;
@@ -215,14 +221,25 @@ sourceCode {
 </style>
 </head>
 <body>
+  <div id="fb-root"></div>
+<script>(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 <div class="site">
 <div class="header"><h1><a href="https://andreasgranstrom.com">A Crisis in Improvisation</a></h1><p>Andreas Granström</p></div>
 <main class="main">
 <div class="row">
 <div class="sidebar"><ul class="sidebar-nav"><li class="sidebar-link"><a href="/">Latest</a></li><li class="sidebar-link"><a href="/pages/articles">Articles</a></li><li class="sidebar-link"><a href="/pages/about">About</a></li><li class="sidebar-link"><a href="/pages/contact">Contact</a></li></ul></div>
 <div class="content"><div class="post">
-<h4 class="page-date">2015-02-20</h4>
+<h4 class="page-date">2015-02-20<br><span class="tags"><span class="tag">Tags:</span><span class="tag">functional-programming</span><span class="tag">haskell</span></span></h4>
 <h1 class="page-title"><a href="https://andreasgranstrom.com/posts/functional_reactive_game_programming">Functional Reactive Game Programming</a></h1>
+<div class="fb-share-button"data-href="https://andreasgranstrom.com/posts/functional_reactive_game_programming"data-layout="button"></div>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script> <script type="IN/Share" data-url="https://andreasgranstrom.com/posts/functional_reactive_game_programming"></script>
 <p>Since far long ago I have wanted to get a better understanding of Arrows, and Functional Reactive Programming. After many encounters with the subjects, I finally managed to spend enough time learning about these topics. I am happy to say that I’m no longer in a state of ignorance (if still far from a level I would call proficient).</p>
 <p>This tutorial/journal summarizes my knowledge on these topics through the developing a game using the FRP framework (<a href="http://hackage.haskell.org/package/netwire">Netwire 5.0</a>) and Haskell. I am far from an expert on the subject, so if you have suggestions for improvement, please let me know.</p>
 <p>Before we go any further, let me mention that I was inspired by the following <a href="http://ocharles.org.uk/blog/posts/2013-08-01-getting-started-with-netwire-and-sdl.html">blog post</a> by <a href="http://ocharles.org.uk">ocharles</a>, and due to lack of ideas for a game I decided to create my own version of <a href="http://www.helicoptergame.net/">this</a>.</p>
